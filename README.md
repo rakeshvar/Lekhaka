@@ -1,4 +1,4 @@
-# Lekhaka -- The Indic Scribe
+# Lekhaka — The Indic Scribe
 
 # Mission
 We use `Cairo` and `CFFI` to print complex scripts to slabs of images, 
@@ -31,16 +31,18 @@ Given the complicated dependencies, you can first check if you have all the depe
 
 ```sh
 cd tests
-python3 test_scribe_random.py
-python3 test_scribe_all_fonts.py <(echo 'క్రైః') > kraih.txt
+python3 test_scribe.py
+python3 test_scribebackend.py <(echo 'క్రైః') > kraih.txt
 # The output should contain the text rendered in various fonts
 ```
 
 # Files
-1. `line_seperate.py` Clever code to split a text page image into individual lines.
+In folder `Lekhaka`:
+1. `page_line_seperate.py` Clever code to split a text page image into individual lines.
 1. `scribe.py` Scribes a given Unicode text to a image slab. (Wrapper class.)
-1. `scribe_interface.py` Interface code to CFFI based code.
-1. `parscribe.py` Parallel Scribe (text from the given language).
+1. `scribe_backend_interface.py` Interface code to CFFI based code.
+1. `deformer_noiser.py` Elastic deformations for a batch of data and Block Noise adder   
+1. `data_generator.py` A Wrapper around `Scribe, Deformer, Noiser` to generate data
 1. `trimmers.py` Trim a Black and White image to remove empty space around.
 1. `utils.py` Utilities to print images and Probabilities to terminal, etc.
 
