@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 
-from Lekhaka.scribe_backend_interface import scribe_text
+from Lekhaka.scribe_pango_backend import scribe_text
 from utils.trimmers import trim
 from utils import slab_print_255
 import telugu as language

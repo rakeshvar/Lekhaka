@@ -2,7 +2,7 @@ import numpy as np
 import sys
 sys.path.append("..")
 import telugu as language
-from Lekhaka.scribe_backend_interface import scribe_text
+from Lekhaka.scribe_pango_backend import scribe_text
 
 num_styles = 50
 line_ht = 120

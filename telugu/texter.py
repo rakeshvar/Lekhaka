@@ -16,46 +16,42 @@ bi_acc_cache_np = {}
 REDUCE_COUNT_BY_nTH = 8
 
 def get_next_char(char):
-    if char in bi_acc_cache:
-        followers, accumulated_counts = bi_acc_cache[char]
-    else:
+    if char not in bi_acc_cache:
         followers, counts = zip(*bigram_counts[char].items())
         accumulated_counts = tuple(accumulate(counts))
         bi_acc_cache[char] = followers, accumulated_counts
 
-    loc = int(accumulated_counts[-1] * random())
-    follower = bisect.bisect(accumulated_counts, loc)
-    return followers[follower]
+    followers, accumulated_counts = bi_acc_cache[char]
+    accumulated_loc = int(accumulated_counts[-1] * random())
+    loc = bisect.bisect(accumulated_counts, accumulated_loc)
+    return followers[loc]
 
 
 def get_next_char_decay(char):  # Nearly six times slower!
-    try:
-        followers, accumulated_counts = bi_acc_cache_np[char]
-    except KeyError:
+    if char not in bi_acc_cache:
         followers, counts = zip(*bigram_counts[char].items())
         accumulated_counts = np.fromiter(accumulate(counts), dtype=np.int32)
         bi_acc_cache_np[char] = followers, accumulated_counts
 
-    loc = np.int32(accumulated_counts[-1] * random())
-    follower = bisect.bisect(accumulated_counts, loc)
-    current_count = accumulated_counts[follower]
-    if follower:
-        current_count -= accumulated_counts[follower-1]
+    followers, accumulated_counts = bi_acc_cache_np[char]
+    accumulated_loc = np.int32(accumulated_counts[-1] * random())
+    loc = bisect.bisect(accumulated_counts, accumulated_loc)
 
+    current_count = accumulated_counts[loc] - (accumulated_counts[loc-1] if loc else 0)
     if current_count > 1:
         if current_count < REDUCE_COUNT_BY_nTH:
             decrement = 1
         else:
             decrement = current_count//REDUCE_COUNT_BY_nTH
 
-        accumulated_counts[follower:] -= decrement
+        accumulated_counts[loc:] -= decrement
 
     # if len(accumulated_counts) == 5 and char == 'ణ్ని':
     #     print("{}) {:5d} < {:5d} picks {:2d} removed {:4d}//{} = {:3d} from {} {}".format(
     #         len(accumulated_counts), loc, accumulated_counts[-1], follower,
     #         current_count, REDUCE_COUNT_BY_nTH, decrement, accumulated_counts, char))
 
-    return followers[follower]
+    return followers[loc]
 
 
 def get_word(length, getter=get_next_char, as_str=False):

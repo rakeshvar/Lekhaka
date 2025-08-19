@@ -3,7 +3,7 @@ import threading
 import queue
 
 from .vertical_aligner import VerticalAlign
-AVG_CHARS_PER_LABEL = 2.5
+AVG_CHARS_PER_LABEL = 3
 
 class DataGenerator:
     def __init__(self, scriber, deformer, noiser, batch_size=1, labelswidth=None):
@@ -46,21 +46,18 @@ class DataGenerator:
         images = np.expand_dims(images, axis=-1)
         return images, labels, image_lengths, label_lengths
 
+    def generator(self):
+        while True:
+            yield self.get()
 
-class ParallelDataGenerator(DataGenerator):
-    def __init__(self, *args, **kwargs):
-        super(ParallelDataGenerator, self).__init__(*args, **kwargs)
-        self.queue = queue.Queue(maxsize=3)
-        self._start_thread()
+    def generator_parallel(self):
+        que = queue.Queue(maxsize=3)
+        def background_generator():
+            while True:
+                que.put(self.get())
 
-    def _start_thread(self):
-        def _base_call_wrapper():
-            self.queue.put(super(ParallelDataGenerator, self).get())
+        thread = threading.Thread(target=background_generator, daemon=True)
+        thread.start()
 
-        self.thread = threading.Thread(target=_base_call_wrapper, daemon=True)
-        self.thread.start()
-
-    def get(self):
-        self.thread.join()
-        self._start_thread()
-        return self.queue.get()
+        while True:
+            yield que.get()

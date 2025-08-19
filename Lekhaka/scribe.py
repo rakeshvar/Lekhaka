@@ -1,5 +1,4 @@
-import cairocffi
-from .scribe_backend_interface import scribe_text
+from .scribe_pango_backend import scribe_text
 
 styles = '', ' Italic', ' Bold', ' Bold Italic'
 CHARWD_OF_LINEHT = .55 # A telugu character is \approx 55% of line ht
@@ -17,6 +16,8 @@ class Scribe:
 
     def _calculate_width(self, nchars):
         width = int(nchars * CHARWD_OF_LINEHT * self.height) + 2*self.hbuffer
+        width = (((width-1)>>4)+1)<<4
+        return width
         return cairocffi.ImageSurface.format_stride_for_width(cairocffi.FORMAT_A8, width)
 
     def get_sample_chars_width(self, nchars, width):

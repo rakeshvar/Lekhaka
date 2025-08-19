@@ -4,7 +4,7 @@ sys.path.append("..")
 
 import telugu
 import telugu as language
-from Lekhaka.scribe_backend_interface import scribe_text
+from Lekhaka.scribe_pango_backend import scribe_text
 
 max_ht, max_wd = 0, 0
 buffer_wd, buffer_ht = 1280, 128

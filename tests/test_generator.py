@@ -8,7 +8,7 @@ from Lekhaka import Scribe, Deformer, DataGenerator, Noiser
 
 # Initialize
 gray = .3
-bsz_cols, bsz_rows = 3, 10
+bsz_cols, bsz_rows = 4, 6
 batch_size = bsz_cols * bsz_rows
 slab_ht = 96
 elastic_args0 = {
@@ -21,7 +21,7 @@ elastic_args0 = {
 elastic_args1 = {
     'translation': 5,
     'zoom': .15,
-    'elastic_magnitude': 0,
+    'elastic_magnitude': 60,
     'sigma': 30,
     'angle': 3,
     'nearest': True}
@@ -34,7 +34,7 @@ scribe_args = {
     'height': slab_ht,
     'hbuffer': 5,
     'vbuffer': 0,
-    'nchars_per_sample': 10,
+    'nchars_per_sample': 7,
 }
 
 lang.select_labeler('cv')
@@ -68,4 +68,6 @@ img = np.hstack([np.vstack(img[i:(i + bsz_rows)]) for i in range(0, batch_size, 
 print(f"Final Image Shape: {img.shape}")
 print(f"Final Image Max:{img.max()} Mean:{img.mean():.3f} Min:{img.min()}")
 
-Image.fromarray((255*(1-img)).astype('uint8')).show()
+final = Image.fromarray((255*(1-img)).astype('uint8'))
+final.save(f"telugu{bsz_cols}{bsz_rows}{slab_ht}.png")
+final.show()
