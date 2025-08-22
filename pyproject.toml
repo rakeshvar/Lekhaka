@@ -8,10 +8,9 @@ version = "0.1.0"
 description = "A Scribe that can write beautiful text in various fonts of a given language, starting with Telugu."
 authors = [{ name="rakeshvar", email="your@email.com" },]
 
-[tool.setuptools]
-packages = ["Lekhaka", "telugu"]
-
-include-package-data = true
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["Lekhaka", "telugu"]
 
 [tool.setuptools.package-data]
 "telugu" = ["data/*"]
