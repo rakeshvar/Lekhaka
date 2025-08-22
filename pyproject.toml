@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Lekhaka"
+version = "0.1.0"
+description = "A Scribe that can write beautiful text in various fonts of a given language, starting with Telugu."
+authors = [{ name="rakeshvar", email="your@email.com" },]
+
+[tool.setuptools]
+packages = ["Lekhaka", "telugu"]
