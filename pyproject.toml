@@ -10,3 +10,8 @@ authors = [{ name="rakeshvar", email="your@email.com" },]
 
 [tool.setuptools]
 packages = ["Lekhaka", "telugu"]
+
+include-package-data = true
+
+[tool.setuptools.package-data]
+"telugu" = ["data/*"]
