@@ -4,7 +4,10 @@ sys.path.append("..")
 import telugu as language
 from Lekhaka.scribe_pango_backend import scribe_text
 
-num_styles = 50
+styles = ['', ' Italic', ' Bold', ' Bold Italic']
+style_abbr = ['R', 'I', 'B', 'Bi']
+num_fonts = len(language.font_properties)
+num_styles = num_fonts * len(styles)
 line_ht = 120
 buffer_wd = 150 * 30
 buffer_ht = num_styles * line_ht
@@ -17,17 +20,13 @@ data = np.zeros(shape=(buffer_ht, buffer_wd), dtype=np.uint8)
 print(f"Num\tfont_name\tavg_sz")
 
 for font_name in sorted(language.font_properties):
-    [avg_sz, gho, rep, ppu, spc, abbr, has_bold] = language.font_properties[font_name]
-    styles = ['', ' Italic']
-    if has_bold:
-        styles += [' Bold', ' Bold Italic']
+    [avg_sz, gho, rep, ppu, spc, has_bold, abbr] = language.font_properties[font_name]
 
-    # for style in styles:
-    if True:
-        font_style = "{} {} {}".format(font_name, "", avg_sz)
-        text = f"{i} {teltext}"
-        print(f"{i}\t{font_name}\t{avg_sz}")
-        slab = scribe_text(text, font_style, buffer_wd, line_ht, 10, 10, 0)
+    for sty, style in zip(style_abbr, styles):
+        font_style = "{} {} {}".format(font_name, style, avg_sz)
+        text = f"{i} {abbr}:{sty} {teltext}"
+        print(f"{i:3d} {font_style}")
+        slab = scribe_text(text, font_style, line_ht, buffer_wd, 10, 10)
         data[i*line_ht:(i+1)*line_ht, :] = slab
         i += 1
 

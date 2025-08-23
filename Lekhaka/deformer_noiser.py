@@ -105,7 +105,7 @@ class Deformer:
             horz = np.rint(transx).astype(int)
             for i in range(b):
                 output[i] = inpt[i, vert[i], horz[i]]
-        else:
+        else:   # Linear Interpolate
             topp = np.floor(transy)
             left = np.floor(transx)
             fraction_y = transy - topp

@@ -71,13 +71,16 @@ units_from_double = pango.pango_units_from_double
 
 
 def scribe_text(text, font_style,
-                width, height,
+                height, width,
                 x_offset, y_offset):
-
+    """
+    Background: 0 (appears black when viewed as grayscale)
+    Text/ink:   255 (appears white when viewed as grayscale)
+    """
     fmt = cairocffi.FORMAT_A8
     width = cairocffi.ImageSurface.format_stride_for_width(fmt, width)
     data = array.array('b', [0] * (height * width))
-    surface = cairocffi.ImageSurface(fmt, width, height, data, width)
+    surface = cairocffi.ImageSurface(fmt, width, height, data, width)     # Width goes in first here
     # pangocairo.pango_cairo_set_antialias(cairocffi.ANTIALIAS_SUBPIXEL)
 
     context = cairocffi.Context(surface)
@@ -87,10 +90,10 @@ def scribe_text(text, font_style,
 
     font_desc = pango.pango_font_description_from_string(font_style.encode('utf8'))
     pango.pango_layout_set_font_description(layout, font_desc)
-    # pango.pango_layout_set_spacing(spc * 32)
+    # pango.pango_layout_set_spacing(spc * 32)     # Vertical line spacing between texts
 
     pangocairo.pango_cairo_update_layout(context._pointer, layout)
     pangocairo.pango_cairo_show_layout(context._pointer, layout)
-    # print(surface.get_width(), surface.get_height())
+    # print(surface.get_height(), surface.get_width())
 
     return np.frombuffer(data, dtype=np.uint8).reshape((height, width))

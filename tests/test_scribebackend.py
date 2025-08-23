@@ -20,7 +20,8 @@ with open(corpus_file) as fin:
 
 for font in sorted(language.font_properties):
     SIZE, GHO, REPHA, PPU, SPACING, BOLD, ABBR = language.font_properties[font]
-    image = scribe_text(txt, font, 50, 200, 5, 5)
-    print(ABBR)
-    print(f"Images \tshape:{image.shape}\tmax:{image.max():.2f} min:{image.min():.2f}")
-    slab_print_255(trim(image))
+    font_style = f"{font} {SIZE//2}"
+    image = scribe_text(txt, font_style, 50, 200, 5, 5)
+    image = trim(image)
+    print(f"{ABBR} \tshape:{image.shape}\tMax:{image.max():.0f} Mean:{image.mean():.0f}({image.mean()/image.max():.0%}) Min:{image.min():.0f}")
+    slab_print_255(image)

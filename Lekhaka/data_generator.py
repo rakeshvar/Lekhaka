@@ -2,11 +2,13 @@ import numpy as np
 import threading
 import queue
 
+from .scribe import Scribe
+from .deformer_noiser import Deformer, Noiser
 from .vertical_aligner import VerticalAlign
 AVG_CHARS_PER_LABEL = 3
 
 class DataGenerator:
-    def __init__(self, scriber, deformer, noiser, batch_size=1, labelswidth=None):
+    def __init__(self, scriber:Scribe, deformer:Deformer, noiser:Noiser, batch_size:int=1, labelswidth=None):
         self.scriber = scriber
         self.deformer = deformer
         self.noiser = noiser
@@ -19,7 +21,7 @@ class DataGenerator:
     def get(self):
         scribe = self.scriber
 
-        images = np.empty(dtype=np.float32, shape=(self.batch_size, scribe.width, scribe.height))  # Width should come first
+        images = np.empty(dtype=np.float32, shape=(self.batch_size, scribe.height, scribe.width))
         labels = np.empty(dtype=int, shape=(self.batch_size, self.labelswidth))
         label_lengths = np.empty(dtype=int, shape=(self.batch_size,))
 
@@ -27,23 +29,23 @@ class DataGenerator:
         for i in range(self.batch_size):
             img, _, lbls = scribe()
             img = self.vertical_align(img)
-            images[i, :, :] = img.T / 255.  # Transposing
+            images[i, :, :] = img / 255.         # Text = 1.0 & Paper = 0.0
             labels[i, :len(lbls)] = lbls
             label_lengths[i] = len(lbls)
 
         # Distort the Images
-        images[:, -1, :] = 0                    # Set last column of slab to zero for interpolation
+        images[:, :, -1] = 0                    # Set last column of slab to zero for interpolation
         images = self.deformer(images)
 
-        # Calculate Image lengths
-        image_lengths = [np.nonzero(np.sum(img, axis=-1))[0][-1] for img in images]
+        # Calculate image lengths (or better called image widths)
+        image_lengths = [np.nonzero(np.sum(img, axis=-2))[0][-1] for img in images]
         image_lengths += 2*np.random.randint(1, scribe.hbuffer, size=(self.batch_size,))  # Add some buffer
         image_lengths = np.minimum(image_lengths, scribe.width-1)                         # Clamp it to width
 
         # Add noise now
         self.noiser(images)
 
-        images = np.expand_dims(images, axis=-1)
+        images = np.expand_dims(images, axis=-1)            # Add a dummy dimension for channels
         return images, labels, image_lengths, label_lengths
 
     def generator(self):

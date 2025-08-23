@@ -8,8 +8,8 @@ from Lekhaka import Scribe, Deformer, DataGenerator, Noiser
 
 # Initialize
 gray = .3
-bsz_cols, bsz_rows = 4, 6
-batch_size = bsz_cols * bsz_rows
+bsz_rows, bsz_cols  = 6, 4
+batch_size = bsz_rows * bsz_cols
 slab_ht = 96
 elastic_args0 = {
     'translation': 0,
@@ -46,28 +46,28 @@ noiser = Noiser(**noise_args1)
 gen = DataGenerator(scriber, deformer, noiser, batch_size)
 
 # Generate Data
-image, labels, image_lengths, label_lengths = gen.get()
+images, labels, image_lengths, label_lengths = gen.get()
 
 # Print
 print(scriber)
-print(f"Image Shape:{image.shape}")
-print(f"Max:{image.max()} Mean:{image.mean():.3f} Min:{image.min()}")
-print(f"Type:{image.dtype}")
+print(f"Image Shape:{images.shape}")
+print(f"Max:{images.max()} Mean:{images.mean():.3f} Min:{images.min()}")
+print(f"Type:{images.dtype}")
 print(f"image_lengths: {image_lengths}")
 print(f"label_lengths: {label_lengths}")
 for i, l in enumerate(label_lengths):
     print(f"{i}: {labels[i][:l]}")
 
-img = image.transpose((0, 2, 1, 3)).squeeze()
-img[:, 0, :] = gray
-img[:, :, 0] = gray
+images = images.squeeze() # Remove dummy channel dimension
+images[:, 0, :] = gray
+images[:, :, 0] = gray
 for (i, l) in enumerate(image_lengths):
-    img[i, :, l] = gray
+    images[i, ::2, l] = gray
 
-img = np.hstack([np.vstack(img[i:(i + bsz_rows)]) for i in range(0, batch_size, bsz_rows)])
+img = np.hstack([np.vstack(images[i:(i + bsz_rows)]) for i in range(0, batch_size, bsz_rows)])
 print(f"Final Image Shape: {img.shape}")
 print(f"Final Image Max:{img.max()} Mean:{img.mean():.3f} Min:{img.min()}")
 
 final = Image.fromarray((255*(1-img)).astype('uint8'))
-final.save(f"telugu{bsz_cols}{bsz_rows}{slab_ht}.png")
+final.save(f"telugu{bsz_cols}x{bsz_rows}x{slab_ht}x{images.shape[-1]}.png")
 final.show()

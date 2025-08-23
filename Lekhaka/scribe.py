@@ -26,7 +26,7 @@ class Scribe:
         text_as_str = ''.join(text_as_list)
         size = int(rel_size * self.scalefactor)
         font_style = f"{fontname} {styles[styleid]} {size}"
-        img = scribe_text(text_as_str, font_style, width, self.height, self.hbuffer, self.vbuffer)
+        img = scribe_text(text_as_str, font_style, self.height, width, self.hbuffer, self.vbuffer) # Text = 255
         return img, text_as_str, self.language.get_labels(text_as_list)
 
     def __call__(self, nchars=None):
