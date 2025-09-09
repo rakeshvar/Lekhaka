@@ -67,8 +67,3 @@ def get_word(length, getter=get_next_char, as_str=False):
         sample_text = ''.join(sample_text)
 
     return sample_text
-
-
-def get_words(n, len, fn):
-     for i in range(n):
-         get_word(len, fn)
