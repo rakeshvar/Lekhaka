@@ -8,8 +8,8 @@ from pathlib import  Path
 print("*"*88, "\nLoading the uni and bigram counts")
 this_dir= Path(__file__).parent                           # .reslove()
 
-akshara_path = this_dir / "data" / "akshara_bigram.pkl.gz"
-char_path = this_dir / "data" / "char_gram.pkl.gz"
+akshara_path = this_dir / "data" / "akshara_trigram.pkl.gz"
+char_path = this_dir / "data" / "char_trigram.pkl.gz"
 
 
 def load_dicts(filename):
@@ -83,7 +83,7 @@ def get_word(length):
     global count
     count += 1
     if not count % 2:
-        return char_tri.get_word(3*length//2, "orig")
+        return char_tri.get_word(4*length//3, "orig")
     else:
         return akshara_bi.get_word(length, "sqrt")
 
