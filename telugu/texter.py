@@ -70,6 +70,8 @@ class Sampler:
         for l in range(length):
             si, ti = ti, self.get_next(scaling, ti, si)
             t = ' ' if self.itos[ti] in "\n\x1e" else self.itos[ti]
+            if t == '|':
+                t = '।'
             sample_text.append(t)
 
         return ''.join(sample_text)
