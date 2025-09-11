@@ -5,7 +5,7 @@ import queue
 from .scribe import Scribe
 from .deformer_noiser import Deformer, Noiser
 from .vertical_aligner import VerticalAlign
-AVG_CHARS_PER_LABEL = 3
+AVG_CHARS_PER_LABEL = 4
 
 class DataGenerator:
     def __init__(self, scriber:Scribe, deformer:Deformer, noiser:Noiser, batch_size:int=1, labelswidth=None):
