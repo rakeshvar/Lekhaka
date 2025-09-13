@@ -7,8 +7,10 @@ from .deformer_noiser import Deformer, Noiser
 from .vertical_aligner import VerticalAlign
 AVG_CHARS_PER_LABEL = 4
 
+dummy = lambda x: x
+
 class DataGenerator:
-    def __init__(self, scriber:Scribe, deformer:Deformer, noiser:Noiser, batch_size:int=1, labelswidth=None):
+    def __init__(self, scriber:Scribe, deformer=dummy, noiser=dummy, batch_size:int=1, labelswidth=None):
         self.scriber = scriber
         self.deformer = deformer
         self.noiser = noiser
