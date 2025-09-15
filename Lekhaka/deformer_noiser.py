@@ -125,13 +125,16 @@ class Deformer:
 
 
 class Noiser:
-    def __init__(self, num_blots=0, erase_fraction=.5, minsize=0, maxsize=0):
+    def __init__(self, num_blots=0, erase_fraction=.8, minsize=1, maxsize=1):
         self.num_blots = num_blots
         self.erase_fraction = erase_fraction
         self.minsize = minsize
         self.maxsize = maxsize
 
     def __call__(self, inpt):
+        if self.num_blots == 0:
+            return inpt
+
         batch_sz, h, w = inpt.shape
         size = batch_sz, self.num_blots
         colors = np.random.binomial(n=1, p=1-self.erase_fraction, size=size)

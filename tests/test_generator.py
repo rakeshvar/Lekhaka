@@ -37,7 +37,7 @@ scribe_args = {
     'nchars_per_sample': 7,
 }
 
-lang.select_labeler('cv')
+lang.select_labeler('unicode')
 alphabet_size = len(lang.symbols)
 
 scriber = Scribe(lang, **scribe_args)
