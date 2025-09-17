@@ -43,6 +43,7 @@ def get_labels(text):
     Looks each unicode character separately.
     If not found in all_chars, throws error.
     """
+    text = "".join(text)
     return [stoi_safe(char) for char in text]
 
 

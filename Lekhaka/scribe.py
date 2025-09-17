@@ -9,7 +9,7 @@ class Scribe:
         self.height = height
         self.vbuffer = vbuffer
         self.hbuffer = hbuffer
-        self.scalefactor = height/96                           # When rendered at given size, slab height is ~100 px
+        self.scalefactor = height/96    # When rendered at the given size of the font, the slab height is ~100 px
 
         self.nchars_per_sample = nchars_per_sample
         self.width = None if nchars_per_sample is None else  self._calculate_width(nchars_per_sample)
@@ -21,13 +21,22 @@ class Scribe:
         return cairocffi.ImageSurface.format_stride_for_width(cairocffi.FORMAT_A8, width)
 
     def get_sample_chars_width(self, nchars, width):
+        # Get a random font
         fontname, rel_size, styleid = self.language.random_font()
-        text_as_list = self.language.get_word(nchars)
-        text_as_str = ''.join(text_as_list)
         size = int(rel_size * self.scalefactor)
         font_style = f"{fontname} {styles[styleid]} {size}"
+
+        # Get a random text and remove trailing spaces
+        text_as_list = self.language.get_word(nchars)
+        while text_as_list[-1] in ' \n':
+            text_as_list.pop(-1)
+        text_as_str = ''.join(text_as_list)
+        text_labels = self.language.get_labels(text_as_list)
+
+        # Render to Image
         img = scribe_text(text_as_str, font_style, self.height, width, self.hbuffer, self.vbuffer) # Text = 255
-        return img, text_as_str, self.language.get_labels(text_as_list)
+
+        return img, text_as_str, text_labels
 
     def __call__(self, nchars=None):
         if nchars is None:

@@ -74,7 +74,7 @@ class Sampler:
                 t = '।'
             sample_text.append(t)
 
-        return ''.join(sample_text)
+        return sample_text
 
 
 char_tri = Sampler(char_path, 3)
