@@ -1,7 +1,7 @@
 from .scribe_pango_backend import scribe_text
 
 styles = '', ' Italic', ' Bold', ' Bold Italic'
-CHARWD_OF_LINEHT = .55 # A telugu character is \approx 55% of line ht
+CHARWD_OF_LINEHT = .75       # Upper bound of akshara_width / median_line_height
 
 class Scribe:
     def __init__(self, language, height, vbuffer, hbuffer, nchars_per_sample=None):
